@@ -51,7 +51,7 @@ public class CamelRouter extends RouteBuilder {
             .dataFormatProperty("prettyPrint", "true")
             .enableCORS(true)
             .port(env.getProperty("server.port", "8080"))
-            .contextPath(contextPath.substring(0, contextPath.length() - 2))
+            //.contextPath("/camel" + contextPath.substring(0, contextPath.length() - 2))
             // turn on openapi api-doc
             .apiContextPath("/api-doc")
             .apiProperty("api.title", "User API")
