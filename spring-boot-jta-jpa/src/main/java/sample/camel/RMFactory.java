@@ -16,20 +16,12 @@
  */
 package sample.camel;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.arjuna.ats.arjuna.recovery.RecoveryManager;
 
-//CHECKSTYLE:OFF
-/**
- * A sample Spring Boot application that starts the Camel routes.
- */
-@SpringBootApplication
-public class MyCamelApplication {
-    /**
-     * A main method to start this application.
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(MyCamelApplication.class, args);
+public class RMFactory {
+    public RecoveryManager createInstance() {
+        RecoveryManager recoveryManager = RecoveryManager.manager(RecoveryManager.INDIRECT_MANAGEMENT);
+        recoveryManager.startRecoveryManagerThread();
+        return recoveryManager;
     }
-
 }

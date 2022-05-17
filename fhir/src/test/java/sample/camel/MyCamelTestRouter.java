@@ -16,20 +16,17 @@
  */
 package sample.camel;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.apache.camel.builder.RouteBuilder;
 
-//CHECKSTYLE:OFF
-/**
- * A sample Spring Boot application that starts the Camel routes.
- */
-@SpringBootApplication
-public class MyCamelApplication {
-    /**
-     * A main method to start this application.
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(MyCamelApplication.class, args);
-    }
+import org.springframework.stereotype.Component;
 
+@Component
+public class MyCamelTestRouter extends RouteBuilder {
+
+	@Override
+	public void configure() throws Exception {
+		from("direct:start")
+				.to("fhir://read/resourceById?resourceClass=Patient&stringId=1&serverUrl={{serverUrl}}&fhirVersion={{fhirVersion}}")
+				.to("mock:result");
+	}
 }
