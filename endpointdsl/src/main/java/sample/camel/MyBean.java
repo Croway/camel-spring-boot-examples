@@ -16,30 +16,25 @@
  */
 package sample.camel;
 
-import org.apache.camel.builder.RouteBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
- * A simple Camel route that triggers from a timer and calls a bean and prints to system out.
+ * A bean that returns a message when you call the {@link #saySomething()} method.
  * <p/>
- * Use <tt>@Component</tt> to make Camel auto-detect this route when starting.
+ * Uses <tt>@Component("myBean")</tt> to register this bean with the name <tt>myBean</tt>
+ * that we use in the Camel route to lookup this bean.
  */
-@Component
-public class MyCamelRouter extends RouteBuilder {
+@Component("myBean")
+public class MyBean {
 
-    // we can use spring dependency injection
-    @Autowired
-    MyBean myBean;
+    private int counter;
 
-    @Override
-    public void configure() throws Exception {
-        // start from a timer
-        from("timer:hello?period={{myPeriod}}").routeId("hello")
-                // and call the bean
-                .bean(myBean, "saySomething")
-                // and print it to system out via stream component
-                .to("stream:out");
+    @Value("${greeting}")
+    private String say;
+
+    public String saySomething(String body) {
+        return String.format("%s I am invoked %d times", say, ++counter);
     }
 
 }

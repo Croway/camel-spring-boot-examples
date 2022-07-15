@@ -16,30 +16,32 @@
  */
 package sample.camel;
 
-import org.apache.camel.builder.RouteBuilder;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.camel.CamelContext;
+import org.apache.camel.builder.NotifyBuilder;
+import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.test.context.SpringBootTest;
 
-/**
- * A simple Camel route that triggers from a timer and calls a bean and prints to system out.
- * <p/>
- * Use <tt>@Component</tt> to make Camel auto-detect this route when starting.
- */
-@Component
-public class MyCamelRouter extends RouteBuilder {
 
-    // we can use spring dependency injection
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+@CamelSpringBootTest
+@SpringBootTest(classes = MyCamelApplication.class)
+public class MyCamelApplicationJUnit5Test {
+
     @Autowired
-    MyBean myBean;
+    private CamelContext camelContext;
 
-    @Override
-    public void configure() throws Exception {
-        // start from a timer
-        from("timer:hello?period={{myPeriod}}").routeId("hello")
-                // and call the bean
-                .bean(myBean, "saySomething")
-                // and print it to system out via stream component
-                .to("stream:out");
+    @Test
+    public void shouldProduceMessages() throws Exception {
+        // we expect that one or more messages is automatic done by the Camel
+        // route as it uses a timer to trigger
+        NotifyBuilder notify = new NotifyBuilder(camelContext).whenDone(1).create();
+
+        assertTrue(notify.matches(10, TimeUnit.SECONDS));
     }
 
 }
