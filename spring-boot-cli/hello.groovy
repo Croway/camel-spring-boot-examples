@@ -14,24 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.camel.example;
+@Grab("org.apache.camel:camel-core:3.18.0")
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.apache.camel.builder.RouteBuilder;
 
-//CHECKSTYLE:OFF
-/**
- * A sample Spring Boot application that starts the Camel routes.
- */
-@SpringBootApplication
-public class ServiceCallConsumerApplication {
+import org.apache.camel.CamelContext;
+import org.apache.camel.impl.DefaultCamelContext;
 
-    /**
-     * A main method to start this application.
-     */
-    public static void main(String[] args) {
-        SpringApplication.run(ServiceCallConsumerApplication.class, args);
+class CamelRunner {
+
+    RouteBuilder hello() {
+        return new RouteBuilder() {
+            public void configure() {
+                from("timer:simple?period=1000")
+                        .log("Hello Cameleers")
+            }
+        }
+
     }
 
+    @Bean
+    public CommandLineRunner runner() {
+        return (args) -> {
+            try (CamelContext camelContext = new DefaultCamelContext()) {
+                camelContext.addRoutes(hello());
+                camelContext.start();
+                Thread.sleep(10000);
+            }
+        };
+    }
 }
-//CHECKSTYLE:ON
