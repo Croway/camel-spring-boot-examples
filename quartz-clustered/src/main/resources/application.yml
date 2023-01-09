@@ -1,0 +1,64 @@
+## ---------------------------------------------------------------------------
+## Licensed to the Apache Software Foundation (ASF) under one or more
+## contributor license agreements.  See the NOTICE file distributed with
+## this work for additional information regarding copyright ownership.
+## The ASF licenses this file to You under the Apache License, Version 2.0
+## (the "License"); you may not use this file except in compliance with
+## the License.  You may obtain a copy of the License at
+##
+##      http://www.apache.org/licenses/LICENSE-2.0
+##
+## Unless required by applicable law or agreed to in writing, software
+## distributed under the License is distributed on an "AS IS" BASIS,
+## WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+## See the License for the specific language governing permissions and
+## limitations under the License.
+## ---------------------------------------------------------------------------
+
+camel:
+  springboot:
+    main-run-controller: true #Keep camel running
+    duration-max-seconds: 60 #Automatic shutdown after 60 seconds
+
+  component:
+    quartz:
+      scheduler-name: clusteredScheduler
+
+spring:
+  quartz:
+    scheduler-name: clusteredScheduler
+    job-store-type: jdbc #Database Mode
+    jdbc:
+      schema: db_schema.sql
+      initialize-schema: NEVER
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceId: AUTO #Default hostname and timestamp generate instance ID, which can be any string, but must be the only corresponding qrtz_scheduler_state INSTANCE_NAME field for all dispatchers
+            instanceName: clusteredScheduler #quartzScheduler
+            skipUpdateCheck: true
+
+          dataSource:
+            quartzDS:
+              URL: ${jdbc.url}
+              driver: org.postgresql.Driver
+              provider: hikaricp
+              user: ${jdbc.user}
+              password: ${jdbc.password}
+
+          jobStore:
+            dataSource: quartzDS
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX #Persistence Configuration
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.PostgreSQLDelegate #We only make database-specific proxies for databases
+            useProperties: false #Indicates that JDBC JobStore stores all values in JobDataMaps as strings, so more complex objects can be stored as name-value pairs rather than serialized in BLOB columns.In the long run, this is safer because you avoid serializing non-String classes to BLOB class versions.
+            tablePrefix: qrtz_  #Database Table Prefix
+            misfireThreshold: 60000 #The number of milliseconds the dispatcher will "tolerate" a Trigger to pass its next startup time before being considered a "fire".The default value (if you do not enter this property in the configuration) is 60000 (60 seconds).
+            clusterCheckinInterval: 5000 #Set the frequency (in milliseconds) of this instance'checkin'* with other instances of the cluster.Affects the speed of detecting failed instances.
+            isClustered: true #Turn on Clustering
+
+          threadPool: #Connection Pool
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: true

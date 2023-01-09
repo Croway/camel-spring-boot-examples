@@ -27,9 +27,9 @@
         <version>4.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>camel-example-spring-boot-quartz</artifactId>
-    <name>Camel SB Examples :: Quartz</name>
-    <description>An example showing how to work with Camel Quartz and Camel Log with Spring Boot</description>
+    <artifactId>camel-example-spring-boot-quartz-clusted</artifactId>
+    <name>Camel SB Examples :: Quartz Clustered</name>
+    <description>An example showing how to work with Camel Quartz with Spring Boot quartz cluster configuration</description>
 
     <properties>
         <category>Beginner</category>
