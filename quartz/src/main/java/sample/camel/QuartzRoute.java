@@ -17,16 +17,37 @@
 package sample.camel;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.quartz.QuartzComponent;
+
+import org.quartz.Scheduler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 @Component
 public class QuartzRoute extends RouteBuilder {
 
+    @Value("${camel.springboot.name}")
+    String appName;
+
+    @Autowired
+    ApplicationContext applicationContext;
+
     @Override
     public void configure() throws Exception {
-        from("quartz://myGroup/myTimerName?cron=0/5+*+*+*+*+?")
-            .setBody(constant("Test"))
+        from("custom-quartz:QuartzScheduler/clusteredScheduler?cron=0/5+*+*+*+*+?")
+            .setBody(constant("Test " + appName))
             .to("log:info");
+    }
+
+    @Bean("custom-quartz")
+    public QuartzComponent customQuartz() {
+        QuartzComponent quartzComponent = new QuartzComponent();
+        quartzComponent.setScheduler((Scheduler) applicationContext.getBean("quartzScheduler"));
+
+        return quartzComponent;
     }
 
 }

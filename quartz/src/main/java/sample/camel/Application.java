@@ -16,14 +16,21 @@
  */
 package sample.camel;
 
+import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+
+import javax.sql.DataSource;
 
 //CHECKSTYLE:OFF
 /**
  * A sample Spring Boot application that starts the Camel routes.
  */
 @SpringBootApplication
+@EnableAutoConfiguration
 public class Application {
 
     /**
