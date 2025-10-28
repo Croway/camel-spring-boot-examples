@@ -59,32 +59,32 @@ public class AmqpSalesforceRoute extends RouteBuilder {
                 .log("Received message from AMQP queue: ${body}")
                 .process(exchange -> {
                     String jsonMessage = exchange.getIn().getBody(String.class);
-                    JsonParser jsonParser = new JsonFactory().createParser(jsonMessage);
-                    String name = "no name";
-                    String screenName = "no description";
-                    while(jsonParser.nextToken() != JsonToken.END_OBJECT) {
-                        String key = jsonParser.getCurrentName();
-                        if ("lastName".equals(key)) {
-                            jsonParser.nextToken();
-                            name = jsonParser.getValueAsString();
-                        } else if ("screenName".equals(key)) {
-                            jsonParser.nextToken();
-                            screenName = jsonParser.getValueAsString();
+                    try (JsonParser jsonParser = new JsonFactory().createParser(jsonMessage)) {
+                        String name = "no name";
+                        String screenName = "no description";
+                        while(jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                            String key = jsonParser.getCurrentName();
+                            if ("lastName".equals(key)) {
+                                jsonParser.nextToken();
+                                name = jsonParser.getValueAsString();
+                            } else if ("screenName".equals(key)) {
+                                jsonParser.nextToken();
+                                screenName = jsonParser.getValueAsString();
+                            }
                         }
+
+                        Class contact = null;
+                        if (Class.forName("org.apache.camel.salesforce.dto.Contact") != null) {
+                            contact = Class.forName("org.apache.camel.salesforce.dto.Contact");
+                        }
+
+                        Object contactObject = contact.newInstance();
+                        Method setLastName = contact.getMethod("setLastName", String.class);
+                        Method setTwitterScreenName__c = contact.getMethod("setTwitterScreenName__c", String.class);
+                        setLastName.invoke(contactObject, name);
+                        setTwitterScreenName__c.invoke(contactObject, screenName);
+                        exchange.getIn().setBody(contactObject);
                     }
-
-                    Class contact = null;
-                    if (Class.forName("org.apache.camel.salesforce.dto.Contact") != null) {
-                        contact = Class.forName("org.apache.camel.salesforce.dto.Contact");
-                    }
-
-                    Object contactObject = contact.newInstance();
-                    Method setLastName = contact.getMethod("setLastName", String.class);
-                    Method setTwitterScreenName__c = contact.getMethod("setTwitterScreenName__c", String.class);
-                    setLastName.invoke(contactObject, name);
-                    setTwitterScreenName__c.invoke(contactObject, screenName);
-                    exchange.getIn().setBody(contactObject);
-
                 })
                 .to("salesforce:upsertSObject?sObjectIdName=TwitterScreenName__c")
                 .log("SObject ID: ${body?.id}");

@@ -6,6 +6,8 @@ services:
     image: otel/opentelemetry-collector:latest
     command:
       - --config=/etc/otelcol-cont/otel-collector.yml
+    cap_drop:
+      - NET_RAW
     volumes:
       - ./otel-collector.yml:/etc/otelcol-cont/otel-collector.yml
     ports:
@@ -18,6 +20,8 @@ services:
   jaeger-all-in-one:
     image: quay.io/jaegertracing/all-in-one:latest
     restart: always
+    cap_drop:
+      - NET_RAW
     ports:
       - "16686:16686"
 
@@ -25,6 +29,8 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     restart: always
+    cap_drop:
+      - NET_RAW
     ports:
       - "9090:9090"
     volumes:

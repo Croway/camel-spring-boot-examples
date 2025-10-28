@@ -4,6 +4,8 @@ services:
 
   minio:
     image: "quay.io/minio/minio:latest"
+    cap_drop:
+      - NET_RAW
     environment:
       - MINIO_ROOT_USER=admin
       - MINIO_ROOT_PASSWORD=admin123
@@ -18,6 +20,8 @@ services:
 
   otel-collector:
     image: otel/opentelemetry-collector:latest
+    cap_drop:
+      - NET_RAW
     command:
       - --config=/etc/otelcol-cont/otel-collector.yml
     volumes:
@@ -31,5 +35,7 @@ services:
   jaeger-all-in-one:
     image: quay.io/jaegertracing/all-in-one:latest
     restart: always
+    cap_drop:
+      - NET_RAW
     ports:
       - "16686:16686"
