@@ -34,6 +34,8 @@ public class SampleCamelRouter extends RouteBuilder {
             .withBean("greetingValidator");
         
         from("timer:hello?period={{timer.period}}")
+            .log("Current greeting value: {{greeting}}")
+            .log("Current valid value: {{greeting.valid}}")
             .outputTypeWithValidate("greeting")
             .transform(method("myBean", "saySomething"))
             .to("log:out");

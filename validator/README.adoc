@@ -29,7 +29,7 @@ You can run this example using
 
 You can run this example with validation failure using
 
-    mvn spring-boot:run -Dspring-boot.run.arguments=Hello_Mars
+    mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dgreeting=Hello_Mars"
 
 === How to run on Openshift
 

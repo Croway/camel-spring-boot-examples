@@ -3,7 +3,7 @@ spec:
     spec:
       containers:
         - env:
-            - name: JAVA_OPTIONS
+            - name: JAVA_OPTS_APPEND
               value: " -Dgreeting=@greeting@ "
           livenessProbe:
             httpGet:
