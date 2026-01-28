@@ -26,7 +26,7 @@
     </parent>
     <groupId>org.apache.camel.springboot.example</groupId>
     <artifactId>examples</artifactId>
-    <version>4.14.2-SNAPSHOT</version>
+    <version>4.14.4-SNAPSHOT</version>
     <name>Camel SB :: Examples</name>
     <description>Camel Examples</description>
     <packaging>pom</packaging>
