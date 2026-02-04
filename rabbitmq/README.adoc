@@ -30,16 +30,77 @@ Then you can run this example using
 
 == Trying out the example on OpenShift
 
-First, start with creating a new OpenShift project:
+=== Prerequisites
+
+RabbitMQ requires specific user IDs and filesystem groups that are restricted by OpenShift's default Security Context Constraints. Before deploying RabbitMQ, create a custom SCC:
+
+----
+$ cat << 'EOF' | oc apply -f -
+apiVersion: security.openshift.io/v1
+kind: SecurityContextConstraints
+metadata:
+  name: rabbitmq-scc
+allowPrivilegeEscalation: true
+allowPrivilegedContainer: false
+runAsUser:
+  type: MustRunAsRange
+  uidRangeMin: 999
+  uidRangeMax: 999
+seLinuxContext:
+  type: MustRunAs
+seccompProfiles:
+  - runtime/default
+  - localhost/*
+fsGroup:
+  type: MustRunAs
+  ranges:
+    - min: 0
+      max: 65535
+supplementalGroups:
+  type: RunAsAny
+priority: 10
+EOF
+----
+
+=== Installing RabbitMQ Operator
+
+Install the RabbitMQ Cluster Operator from the OpenShift community operators catalog:
+
+----
+$ cat << 'EOF' | oc apply -f -
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  name: rabbitmq-cluster-operator
+  namespace: openshift-operators
+spec:
+  channel: stable
+  name: rabbitmq-cluster-operator
+  source: community-operators
+  sourceNamespace: openshift-marketplace
+EOF
+----
+
+Wait for the operator to be ready:
+
+----
+$ oc get csv -n openshift-operators | grep rabbitmq
+----
+
+Wait until you see `Succeeded` in the PHASE column.
+
+=== Deploying RabbitMQ
+
+Create a new OpenShift project:
 
 ----
 $ oc new-project csb-example-rabbitmq
 ----
 
-Deploy the RabbitMQ broker using the RabbitMQ Cluster Operator. Install the operator in the current namespace following the https://www.rabbitmq.com/kubernetes/operator/install-operator.html[documentation] and run the following command with the `oc` client https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html[doc]:
+Deploy the RabbitMQ cluster:
 
 ----
-$ cat << EOF| oc apply -f -
+$ cat << 'EOF' | oc apply -f -
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
@@ -52,25 +113,66 @@ spec:
 EOF
 ----
 
+Grant the RabbitMQ service account permission to use the custom SCC:
+
+----
+$ oc adm policy add-scc-to-user rabbitmq-scc -z rabbitmq-server -n csb-example-rabbitmq
+----
+
 Wait for the RabbitMQ cluster to be ready:
 
 ----
-$ oc wait --for=condition=ReconcileSuccess rabbitmqcluster/rabbitmq --timeout=300s
+$ oc wait --for=condition=ReconcileSuccess rabbitmqcluster/rabbitmq --timeout=300s -n csb-example-rabbitmq
 ----
 
-=== How to run
+=== Configuring Application Connection
+
+Before deploying the application, you need to retrieve the RabbitMQ connection details and update the `application.properties` file.
+
+Get the RabbitMQ service host:
+
+----
+$ oc get service rabbitmq -n csb-example-rabbitmq -o jsonpath='{.metadata.name}.{.metadata.namespace}.svc.cluster.local' && echo
+----
+
+Get the username:
+
+----
+$ oc get secret rabbitmq-default-user -n csb-example-rabbitmq -o jsonpath='{.data.username}' | base64 -d && echo
+----
+
+Get the password:
+
+----
+$ oc get secret rabbitmq-default-user -n csb-example-rabbitmq -o jsonpath='{.data.password}' | base64 -d && echo
+----
+
+Update `src/main/resources/application.properties` with the retrieved values:
+
+----
+spring.rabbitmq.host = <host-from-above>
+spring.rabbitmq.port = 5672
+spring.rabbitmq.username = <username-from-above>
+spring.rabbitmq.password = <password-from-above>
+----
+
+=== Deploying the Application
 
 The application is deployed using the `openshift-maven-plugin` that takes care of creating all the necessary OpenShift resources.
 
-Simply use the following command to deploy the application:
+Deploy the application:
 
 ----
 $ mvn clean package -Popenshift
 ----
 
-After the application pod reaches the `Ready` state, you can try the same steps as in the local machine deployment.
+After the application pod reaches the `Ready` state, you can verify it's working.
 
-To view the application logs, use `oc logs deployment/csb-rabbitmq`
+To view the application logs:
+
+----
+$ oc logs deployment/csb-rabbitmq -n csb-example-rabbitmq
+----
 
 === Help and contributions
 
