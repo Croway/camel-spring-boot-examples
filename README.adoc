@@ -136,7 +136,7 @@ Number of Examples: 68 (0 deprecated)
 
 | link:kafka-oauth/README.adoc[Kafka Oauth] (kafka-oauth) | Messaging | An example of Kafka authentication using OAuth.
 
-| link:kafka-offsetrepository/README.adoc[Kafka Offsetrepository] (kafka-offsetrepository) | Messaging | An example for Kafka offsetrepository
+| link:kafka-offsetrepository/README.adoc[Kafka Offsetrepository] (kafka-offsetrepository) | Messaging | An example for Kafka using Offset Repository
 
 | link:kafka-sql-transaction/README.adoc[Kafka Sql Transaction] (kafka-sql-transaction) | Messaging | An example of Kafka and SQL transactions.
 
