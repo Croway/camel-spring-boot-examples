@@ -29,8 +29,8 @@
     </parent>
 
     <artifactId>camel-example-spring-boot-kafka-offsetrepository</artifactId>
-    <name>Camel SB Examples :: Kafka :: offsetrepository</name>
-    <description>An example for Kafka offsetrepository</description>
+    <name>Camel SB Examples :: Kafka :: Offset Repository</name>
+    <description>An example for Kafka using Offset Repository</description>
 
     <properties>
         <category>Messaging</category>
