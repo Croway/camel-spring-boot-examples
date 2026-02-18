@@ -16,46 +16,29 @@
  */
 package sample.camel;
 
-import org.apache.camel.CamelContext;
-import org.apache.camel.ProducerTemplate;
-import org.apache.camel.test.spring.junit6.CamelSpringBootTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.camel.CamelContext;
+import org.apache.camel.builder.NotifyBuilder;
+import org.apache.camel.test.spring.junit6.CamelSpringBootTest;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CamelSpringBootTest
-@SpringBootTest(classes = Application.class)
-public class CustomConverterRuntimeTest {
+@SpringBootTest(classes = SampleAmqApplication.class)
+public class SampleAmqApplicationTest {
+    @Autowired
+    private CamelContext camelContext;
 
-	@Autowired
-	private CamelContext context;
+    @Disabled("Requires a running activemq broker")
+    @Test
+    public void shouldProduceMessages() throws Exception {
+        NotifyBuilder notify = new NotifyBuilder(camelContext).whenDone(1).create();
 
-	private ProducerTemplate producerTemplate;
-
-	@BeforeEach
-	public void setup() {
-		producerTemplate = context.createProducerTemplate();
-	}
-
-	@Test
-	public void testCustomConverter() {
-// 		Camel 3.x option : Generating Type Converter Loader class
-// 		Requires  TypeConverterLoader file in /META-INF/services/org/apache/camel/
-		context.getTypeConverterRegistry().addTypeConverters(new CustomRuntimeConverter());
-
-		byte[] data = "John Doe 22".getBytes();
-		final Person abc = producerTemplate.requestBody("direct:convert1", data, Person.class);
-
-		assertNotNull(abc);
-
-		assertEquals("John", abc.getFirstName());
-		assertEquals("Doe", abc.getLastName());
-		assertEquals(22, abc.getAge());
-	}
-
+        assertTrue(notify.matches(10, TimeUnit.SECONDS));
+    }
 }
