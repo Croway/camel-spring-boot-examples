@@ -63,6 +63,7 @@
         <module>platform-http</module>
         <module>platform-http-proxy</module>
         <module>pojo</module>
+        <module>qdrant</module>
         <module>quartz</module>
         <module>rabbitmq</module>
         <module>resilience4j</module>
