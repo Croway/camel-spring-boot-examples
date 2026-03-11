@@ -82,9 +82,9 @@
             <id>redhat-ga</id>
             <url>https://maven.repository.redhat.com/ga/</url>
             <name>Red Hat GA repository</name>
-            <SNAPSHOTs>
+            <snapshots>
                 <enabled>false</enabled>
-            </SNAPSHOTs>
+            </snapshots>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -95,9 +95,9 @@
             <id>redhat-ga</id>
             <url>https://maven.repository.redhat.com/ga/</url>
             <name>Red Hat GA repository</name>
-            <SNAPSHOTs>
+            <snapshots>
                 <enabled>false</enabled>
-            </SNAPSHOTs>
+            </snapshots>
             <releases>
                 <enabled>true</enabled>
             </releases>
