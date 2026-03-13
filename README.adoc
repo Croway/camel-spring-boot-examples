@@ -37,6 +37,8 @@ Number of Examples: 65 (0 deprecated)
 
 | link:spring-boot-jta-jpa-xml/README.adoc[Spring Boot Jta Jpa Xml] (spring-boot-jta-jpa-xml) | Advanced | An example showing JTA with Spring Boot using Spring XML configuration
 
+| link:milvus/readme.adoc[Milvus] (milvus) | AI | An example showing vector similarity search on European cities using Camel OpenAI and Milvus
+
 | link:qdrant/readme.adoc[Qdrant] (qdrant) | AI | An example showing a full RAG pipeline using Camel OpenAI and Qdrant as vector store
 
 | link:webhook/README.adoc[Webhook] (webhook) | Advanced | Example on how to use the Camel Webhook component
