@@ -97,6 +97,8 @@ Number of Examples: 65 (0 deprecated)
 
 | link:multi-datasource-2pc/README.adoc[Multi Datasource 2pc] (multi-datasource-2pc) | Database | An example showing how to work with Camel and Spring Boot using multiple pooled datasources with two-phase commit
 
+| link:docling/readme.adoc[Docling] (docling) | Document Processing | An example showing how to convert documents to Markdown using Camel Docling component and Spring Boot
+
 | link:resilience4j/README.adoc[Resilience4j] (resilience4j) | EIP | An example showing how to use Resilience4j EIP as circuit breaker in Camel routes
 
 | link:saga/README.adoc[Saga] (saga) | EIP | This example shows how to work with a simple Apache Camel application using Spring Boot and Narayana LRA Coordinator to manage distributed actions implementing SAGA pattern
