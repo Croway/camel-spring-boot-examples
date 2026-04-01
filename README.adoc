@@ -27,7 +27,7 @@ readme's instructions.
 === Examples
 
 // examples: START
-Number of Examples: 64 (0 deprecated)
+Number of Examples: 65 (0 deprecated)
 
 [width="100%",cols="4,2,4",options="header"]
 |===
@@ -94,6 +94,8 @@ Number of Examples: 64 (0 deprecated)
 | link:spring-boot-cxf-jaxws-xml/README.adoc[Spring Boot Cxf Jaxws Xml] (spring-boot-cxf-jaxws-xml) | CXF | Spring Boot example running a CXF JAXWS XML Endpoint
 
 | link:multi-datasource-2pc/README.adoc[Multi Datasource 2pc] (multi-datasource-2pc) | Database | An example showing how to work with Camel and Spring Boot using multiple pooled datasources with two-phase commit
+
+| link:docling/readme.adoc[Docling] (docling) | Document Processing | An example showing how to convert documents to Markdown using Camel Docling component and Spring Boot
 
 | link:resilience4j/README.adoc[Resilience4j] (resilience4j) | EIP | An example showing how to use Resilience4j EIP as circuit breaker in Camel routes
 
