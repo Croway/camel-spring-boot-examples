@@ -1,0 +1,5 @@
+{
+  "note": "This is a placeholder for the expected JSON metadata output.",
+  "instructions": "Replace this file with the actual metadata extracted from sample-document.pdf by running the application manually once and copying the result from: src/main/resources/output/metadata/sample-document.json",
+  "usage": "The test will compare the actual output against this expected result."
+}
